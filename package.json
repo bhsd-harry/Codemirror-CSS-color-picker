@@ -1,5 +1,5 @@
 {
-  "name": "@replit/codemirror-css-color-picker",
+  "name": "@bhsd/codemirror-css-color-picker",
   "description": "Enables a color picker input next to css colors",
   "version": "6.3.0",
   "author": {
@@ -18,7 +18,6 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite ./dev",
-    "prepublishOnly": "npm run build",
     "build": "cm-buildhelper src/index.ts",
     "test": "cm-runtests"
   },
@@ -40,7 +39,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/replit/Codemirror-CSS-color-picker"
+    "url": "https://github.com/bhsd-harry/Codemirror-CSS-color-picker"
   },
   "prettier": {
     "singleQuote": true,
