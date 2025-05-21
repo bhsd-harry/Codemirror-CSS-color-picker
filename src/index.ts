@@ -34,9 +34,9 @@ export enum ColorType {
 }
 
 const rgbCallExpRegex =
-  /rgba?\(\s*(\d{1,3}%?)\s*[,\s]\s*(\d{1,3}%?)\s*[,\s]\s*(\d{1,3}%?)\s*([,/]\s*0?\.?\d+%?)?\s*\)/;
+  /rgb(?:a)?\(\s*(\d{1,3}%?)\s*,?\s*(\d{1,3}%?)\s*,?\s*(\d{1,3}%?)\s*([,/]\s*0?\.?\d+%?)?\s*\)/;
 const hslCallExpRegex =
-  /hsla?\(\s*(\d{1,3})(?:deg)?\s*[,\s]\s*(\d{1,3})%?\s*[,\s]\s*(\d{1,3})%?\s*([,/]\s*0?\.?\d+%?)?\s*\)/;
+  /hsl(?:a)?\(\s*(\d{1,3})(?:deg)?\s*,?\s*(\d{1,3})%?\s*,?\s*(\d{1,3})%?\s*([,/]\s*0?\.?\d+%?)?\s*\)/;
 const hexRegex = /(^|\b)(#[0-9a-f]{3,9})(\b|$)/i;
 
 function discoverColorsInCSS(
