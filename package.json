@@ -7,6 +7,9 @@
     "email": "faris@repl.it"
   },
   "type": "module",
+  "files": [
+    "/dist/*"
+  ],
   "main": "dist/index.cjs",
   "exports": {
     "import": "./dist/index.js",
