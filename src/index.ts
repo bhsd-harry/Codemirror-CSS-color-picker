@@ -484,7 +484,7 @@ class ColorPickerWidget extends WidgetType {
 export const colorPickerTheme = EditorView.baseTheme({
   [`.${wrapperClassName}`]: {
     display: 'inline-block',
-    outline: '1px solid #eee',
+    marginLeft: '0.6ch',
     marginRight: '0.6ch',
     height: '1em',
     width: '1em',
@@ -496,6 +496,7 @@ export const colorPickerTheme = EditorView.baseTheme({
     width: '100%',
     padding: 0,
     border: 'none',
+    outline: '1px solid #eee',
     '&::-webkit-color-swatch-wrapper': {
       padding: 0,
     },
@@ -510,6 +511,7 @@ export const colorPickerTheme = EditorView.baseTheme({
 
 interface IFactoryOptions {
    discoverColors: typeof discoverColorsInCSS;
+   namedColors?: Map<string, string>;
 }
 
 export const makeColorPicker = (options: IFactoryOptions) => ViewPlugin.fromClass(
@@ -546,9 +548,9 @@ export const makeColorPicker = (options: IFactoryOptions) => ViewPlugin.fromClas
           converted = `rgb(${hexToRGBComponents(target.value).join(', ')}${
             data.alpha
           })`;
-        } else if (data.colorType === ColorType.named) {
+        } else if (data.colorType === ColorType.named && options.namedColors) {
           // If the hex is an exact match for another named color, prefer retaining name
-          for (const [key, value] of namedColors.entries()) {
+          for (const [key, value] of options.namedColors.entries()) {
             if (value === target.value) {converted = key;}
           }
         } else if (data.colorType === ColorType.hsl) {
@@ -573,4 +575,10 @@ export const makeColorPicker = (options: IFactoryOptions) => ViewPlugin.fromClas
   },
 );
 
-export const colorPicker: Extension = [makeColorPicker({discoverColors: discoverColorsInCSS}), colorPickerTheme];
+export const colorPicker: Extension = [
+  makeColorPicker({
+    discoverColors: discoverColorsInCSS,
+    namedColors,
+  }),
+  colorPickerTheme,
+];

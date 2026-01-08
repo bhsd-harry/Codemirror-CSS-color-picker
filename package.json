@@ -1,7 +1,7 @@
 {
   "name": "@bhsd/codemirror-css-color-picker",
   "description": "Enables a color picker input next to css colors",
-  "version": "6.3.0",
+  "version": "6.3.1",
   "author": {
     "name": "Faris Masad",
     "email": "faris@repl.it"
@@ -17,9 +17,7 @@
   "sideEffects": false,
   "license": "MIT",
   "scripts": {
-    "dev": "vite ./dev",
-    "build": "cm-buildhelper src/index.ts",
-    "test": "cm-runtests"
+    "build": "cm-buildhelper src/index.ts"
   },
   "peerDependencies": {
     "@codemirror/language": "^6.0.0",
@@ -28,21 +26,12 @@
   },
   "devDependencies": {
     "@codemirror/buildhelper": "^0.1.16",
-    "@codemirror/lang-css": "^6.0.0",
-    "@codemirror/lang-html": "^6.4.6",
     "@codemirror/language": "^6.0.0",
     "@codemirror/state": "^6.0.0",
-    "@codemirror/view": "^6.0.0",
-    "codemirror": "^6.0.0",
-    "prettier": "^2.6.0",
-    "vite": "^4.4.9"
+    "@codemirror/view": "^6.0.0"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/bhsd-harry/Codemirror-CSS-color-picker"
-  },
-  "prettier": {
-    "singleQuote": true,
-    "trailingComma": "all"
   }
 }
