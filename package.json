@@ -1,7 +1,7 @@
 {
   "name": "@bhsd/codemirror-css-color-picker",
   "description": "Enables a color picker input next to css colors",
-  "version": "6.3.1",
+  "version": "6.3.2",
   "author": {
     "name": "Faris Masad",
     "email": "faris@repl.it"

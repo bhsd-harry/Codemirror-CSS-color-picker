@@ -11,6 +11,8 @@ import { NodeProp, Tree } from '@lezer/common';
 import { language, syntaxTree } from '@codemirror/language';
 import { namedColors } from './named-colors';
 
+export { namedColors };
+
 interface PickerState {
   from: number;
   to: number;
@@ -39,7 +41,7 @@ const hslCallExpRegex =
   /hsla?\(\s*(\d{1,3})(?:deg)?\s*[,\s]\s*(\d{1,3})%?\s*[,\s]\s*(\d{1,3})%?\s*([,/]\s*0?\.?\d+%?)?\s*\)/;
 const hexRegex = /(^|\b)(#[0-9a-f]{3,9})(\b|$)/i;
 
-function discoverColorsInCSS(
+export function discoverColorsInCSS(
   syntaxTree: Tree,
   from: number,
   to: number,
