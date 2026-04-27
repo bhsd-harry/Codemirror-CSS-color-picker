@@ -1,4 +1,5 @@
 dist/
 /.vscode/
+/build
 /package-lock.json
 /.eslintcache

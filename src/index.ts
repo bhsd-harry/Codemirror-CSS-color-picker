@@ -6,15 +6,15 @@ import {discoverColorsInCSS} from './css.js';
 import {colorToString} from './color.js';
 import type {ViewUpdate, DecorationSet, PluginValue} from '@codemirror/view';
 import type {Range, Extension} from '@codemirror/state';
-import type {DiscoverColors, WidgetOptions} from './css';
+import type {DiscoverColors, WidgetOptions, RGB} from './css';
 
 export {parseCallExpression, parseColorLiteral, parseNamedColor} from './css.js';
 export {namedColors};
 export type {DiscoverColors, WidgetOptions};
 
-const pickerState = new WeakMap<HTMLInputElement, WidgetOptions>();
-
 export const wrapperClassName = 'cm-css-color-picker-wrapper';
+
+const pickerState = new WeakMap<HTMLInputElement, WidgetOptions>();
 
 class ColorPickerWidget extends WidgetType {
 	declare private readonly state;
@@ -127,8 +127,9 @@ const colorPickerTheme = EditorView.baseTheme({
 /**
  * Factory function to create a color picker plugin with the given options
  * @param discoverColors the function to discover colors in a syntax node; return `false` to skip children
+ * @param colors an optional object of color names mapping to RGB values
  */
-export const makeColorPicker = (discoverColors: DiscoverColors): Extension => [
+export const makeColorPicker = (discoverColors: DiscoverColors, colors?: Record<string, RGB>): Extension => [
 	ViewPlugin.fromClass(
 		class ColorPickerViewPlugin implements PluginValue {
 			declare readOnly;
@@ -164,7 +165,7 @@ export const makeColorPicker = (discoverColors: DiscoverColors): Extension => [
 						return false;
 					}
 					const state = pickerState.get(target)!,
-						insert = colorToString(state, target.value);
+						insert = colorToString(state, target.value, colors);
 					if (insert) {
 						const {from, to} = state;
 						view.dispatch({
@@ -180,4 +181,4 @@ export const makeColorPicker = (discoverColors: DiscoverColors): Extension => [
 ];
 
 /** Default color picker plugin for CSS and HTML */
-export const colorPicker = /* @__PURE__ */ makeColorPicker(discoverColorsInCSS);
+export const colorPicker = /* @__PURE__ */ makeColorPicker(discoverColorsInCSS, namedColors);

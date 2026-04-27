@@ -90,7 +90,7 @@ export const discoverColorsInCSS: DiscoverColors = (tree, {from, to, name: typeN
 			return undefined;
 	}
 	const result = parse(doc.sliceString(from, to));
-	return result && {...result, from, to};
+	return result && Object.assign({from, to}, result);
 };
 
 /**

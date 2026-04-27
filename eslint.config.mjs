@@ -32,8 +32,8 @@ export default [
 		files: ['src/*.ts'],
 		rules: {
 			'prefer-object-has-own': 0,
+			'prefer-object-spread': 0,
 			'es-x/no-optional-chaining': 0,
-			'es-x/no-rest-spread-properties': 0,
 		},
 	},
 	{

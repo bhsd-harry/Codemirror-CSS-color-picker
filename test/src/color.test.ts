@@ -1,4 +1,5 @@
 import assert from 'assert';
+import namedColors from 'color-name';
 import {getDelimiter, alphaToString, colorToString} from '../../dist/color.js';
 import type {WidgetOptions} from '../../dist/css';
 
@@ -15,27 +16,27 @@ const colorTest = (
 	const options = {colorType, color: [0, 0, 0]} as WidgetOptions,
 		value = '#ff0000';
 	assert.strictEqual(
-		colorToString({...options, alpha: 1, legacy: false}, value),
+		colorToString({...options, alpha: 1, legacy: false}, value, namedColors),
 		expected[0],
 	);
 	assert.strictEqual(
-		colorToString({...options, alpha: 1, legacy: true, spaced: true}, value),
+		colorToString({...options, alpha: 1, legacy: true, spaced: true}, value, namedColors),
 		expected[1],
 	);
 	assert.strictEqual(
-		colorToString({...options, alpha: 1, legacy: true, spaced: false}, value),
+		colorToString({...options, alpha: 1, legacy: true, spaced: false}, value, namedColors),
 		expected[2],
 	);
 	assert.strictEqual(
-		colorToString({...options, alpha: 0.555, legacy: false}, value),
+		colorToString({...options, alpha: 0.555, legacy: false}, value, namedColors),
 		expected[3],
 	);
 	assert.strictEqual(
-		colorToString({...options, alpha: 0.555, legacy: true, spaced: true}, value),
+		colorToString({...options, alpha: 0.555, legacy: true, spaced: true}, value, namedColors),
 		expected[4],
 	);
 	assert.strictEqual(
-		colorToString({...options, alpha: 0.555, legacy: true, spaced: false}, value),
+		colorToString({...options, alpha: 0.555, legacy: true, spaced: false}, value, namedColors),
 		expected[5],
 	);
 };

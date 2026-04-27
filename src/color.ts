@@ -1,6 +1,5 @@
 import rgb from 'color-space/rgb.js';
 import 'color-space/hsl.js';
-import namedColors from 'color-name';
 import colorRgba from 'color-rgba';
 import {numToHex} from '@bhsd/common';
 import type {WidgetOptions, RGB} from './css';
@@ -15,6 +14,7 @@ export const alphaToString = (alpha: number, legacy: boolean, spaced: boolean): 
 export const colorToString = (
 	{color, alpha, colorType, legacy, spaced}: WidgetOptions,
 	value: string,
+	colors?: Record<string, RGB>,
 ): string | false => {
 	const currentColor = colorRgba(value).slice(0, 3) as RGB;
 	if (currentColor.every((c, i) => c === Math.round(color[i]!))) {
@@ -33,9 +33,9 @@ export const colorToString = (
 			}${alphaToString(alpha, legacy, spaced)})`;
 		}
 		case 'named':
-			if (alpha === 1) {
+			if (colors && alpha === 1) {
 				// If the color is an exact match for another named color, prefer retaining name
-				const colorName = Object.entries(namedColors)
+				const colorName = Object.entries(colors)
 					.find(([, colorValues]) => colorValues.every((c, i) => c === currentColor[i]!))
 					?.[0];
 				if (colorName) {

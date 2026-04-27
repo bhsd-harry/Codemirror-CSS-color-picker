@@ -17,30 +17,29 @@
 	},
 	"type": "module",
 	"files": [
-		"/dist/*"
+		"/dist/index.js",
+		"/dist/*.d.ts"
 	],
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"sideEffects": false,
 	"scripts": {
 		"ls": "npm i --package-lock-only && npm ls --package-lock-only --all --omit=dev",
+		"prepublishOnly": "npm run build",
 		"lint:ts": "tsc --noEmit && eslint --cache .",
 		"lint:md": "markdownlint-cli2 '**/*.md'",
 		"lint": "npm run lint:ts && npm run lint:md",
-		"build": "tsc",
+		"build": "tsc && node build.js && gsed '/^\\/\\/ /d' build/index.js > dist/index.js",
 		"build:test": "tsc --project test/tsconfig.json && npm test",
 		"test": "mocha"
 	},
 	"dependencies": {
-		"@bhsd/common": "^2.0.0",
-		"color-name": "^2.1.0",
-		"color-rgba": "^3.0.0",
-		"color-space": "^2.3.2"
-	},
-	"peerDependencies": {
+		"@bhsd/common": "^2.1.0",
 		"@codemirror/language": "^6.12.3",
 		"@codemirror/state": "^6.6.0",
-		"@codemirror/view": "^6.41.0"
+		"@codemirror/view": "^6.41.0",
+		"color-name": "^2.1.0",
+		"color-space": "^2.3.2"
 	},
 	"devDependencies": {
 		"@bhsd/code-standard": "^2.3.0",
@@ -54,6 +53,8 @@
 		"@types/node": "^24.11.0",
 		"@typescript-eslint/eslint-plugin": "^8.59.0",
 		"@typescript-eslint/parser": "^8.59.0",
+		"color-rgba": "^3.0.0",
+		"esbuild": "^0.28.0",
 		"eslint": "^10.2.1",
 		"eslint-plugin-es-x": "^9.6.0",
 		"eslint-plugin-jsdoc": "^62.9.0",
