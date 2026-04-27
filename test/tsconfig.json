@@ -1,0 +1,16 @@
+{
+	"extends": "../tsconfig.json",
+	"include": [
+		"src/*.ts"
+	],
+	"compilerOptions": {
+		"types": [
+			"mocha",
+			"node"
+		],
+		"target": "es2024",
+		"declaration": false,
+		"rootDir": "src",
+		"outDir": "dist"
+	}
+}

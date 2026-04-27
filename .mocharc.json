@@ -1,0 +1,7 @@
+{
+	"spec": [
+		"test/dist/*.test.js"
+	],
+	"diff": false,
+	"reporter": "progress"
+}

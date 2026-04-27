@@ -4,35 +4,28 @@
 
 A CodeMirror extension that adds a color picker input next to CSS color values. This is a fork of [@replit/codemirror-css-color-picker](https://www.npmjs.com/package/@replit/codemirror-css-color-picker).
 
-![preview](https://replit.com/cdn-cgi/image/width=3840,quality=80/https://storage.googleapis.com/replit/images/1632627522442_46320608eaa3f0c58bebd5fe4a10efc2.gif)
-
-### Usage
+## Usage
 
 ```ts
-import { basicSetup } from 'codemirror';
-import { EditorState } from '@codemirror/state';
-import { EditorView } from '@codemirror/view';
-import { css } from '@codemirror/lang-css';
-import { colorPicker, wrapperClassName } from '@bhsd/codemirror-css-color-picker';
+import {basicSetup} from 'codemirror';
+import {EditorState} from '@codemirror/state';
+import {EditorView} from '@codemirror/view';
+import {css} from '@codemirror/lang-css';
+import {colorPicker} from '@bhsd/codemirror-css-color-picker';
 
 new EditorView({
-  parent: document.querySelector('#editor'),
-  state: EditorState.create({
-    doc: '.wow {\n  color: #fff;\n}',
-    extensions: [
-      basicSetup,
-      css(),
-      colorPicker,
-      EditorView.theme({
-        [`.${wrapperClassName}`]: {
-          outlineColor: 'transparent',
-        },
-      }),
-    ],
-  }),
+	parent: document.querySelector('#editor'),
+	state: EditorState.create({
+		doc: '.wow {\n\tcolor: #fff;\n}',
+		extensions: [
+			basicSetup,
+			css(),
+			colorPicker,
+		],
+	}),
 });
 ```
 
-### Todos
+## Todos
 
-- Investigate solutions for alpha values. `input[type="color"]` doesn't support alpha values, we could show another number input next to it for the alpha value.
+- Investigate solutions for alpha values. `input[type="color"]` does not support alpha values. We could show another number input next to it for the alpha value.
