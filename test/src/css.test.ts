@@ -141,8 +141,26 @@ describe('discovering CSS colors', () => {
 	it('parses call expressions', () => {
 		assert.strictEqual(parseCallExpression('hwb(0 100% 0)'), undefined);
 		assert.strictEqual(parseCallExpression('rgb(255 0)'), undefined);
-		assert.strictEqual(parseCallExpression('rgb(255 0 0.3)'), undefined);
-		assert.strictEqual(parseCallExpression('rgb(255, 0, 0, 55.5%)'), undefined);
+		assert.deepStrictEqual(
+			parseCallExpression('rgb(255 0 0.3)'),
+			{
+				color: [255, 0, 0],
+				alpha: 1,
+				colorType: 'rgb',
+				legacy: false,
+				spaced: true,
+			},
+		);
+		assert.deepStrictEqual(
+			parseCallExpression('rgb(255, 0, 0, 55.5%)'),
+			{
+				color: [255, 0, 0],
+				alpha: 0.555,
+				colorType: 'rgb',
+				legacy: true,
+				spaced: true,
+			},
+		);
 		rgbTest([255, 0, 0]);
 		rgbTest([0.3, 0.4, 0.5], [77, 102, 128]);
 		hslTest([0, 100, 50], [255, 0, 0]);

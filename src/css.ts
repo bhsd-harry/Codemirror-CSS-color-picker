@@ -31,9 +31,9 @@ export type DiscoverColors = (tree: Tree, node: SyntaxNodeRef, doc: Text) =>
 export type ColorData = Omit<WidgetOptions, 'from' | 'to'>;
 
 const rgbCallExpRegex =
-	/^rgba?\(\s*\d+%?(?:\s|\s*,)\s*\d+%?(?:\s|\s*,)\s*\d+%?\s*(?:[,/]\s*0?\.?\d+%?\s*)?\)$/iu;
+	/^rgba?\(\s*(?:\d*\.)?\d+%?(?:\s|\s*,)\s*(?:\d*\.)?\d+%?(?:\s|\s*,)\s*(?:\d*\.)?\d+%?\s*(?:[,/]\s*(?:\d*\.)?\d+%?\s*)?\)$/iu;
 const hslCallExpRegex =
-	/^hsla?\(\s*\d+(?:deg|g?rad|turn)?(?:\s|\s*,)\s*\d+%?(?:\s|\s*,)\s*\d+%?\s*(?:[,/]\s*0?\.?\d+%?\s*)?\)$/iu;
+	/^hsla?\(\s*(?:\d*\.)?\d+(?:deg|g?rad|turn)?(?:\s|\s*,)\s*(?:\d*\.)?\d+%?(?:\s|\s*,)\s*(?:\d*\.)?\d+%?\s*(?:[,/]\s*(?:\d*\.)?\d+%?\s*)?\)$/iu;
 const hexRegex = /^#(?:[\da-f]{3,4}|(?:[\da-f]{2}){3,4})$/iu;
 
 /**
