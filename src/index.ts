@@ -63,8 +63,13 @@ class ColorPickerWidget extends WidgetType {
  * Compute color picker decorations
  * @param view the editor view for which to compute decorations
  * @param discoverColors the function to discover colors in a syntax node; return `false` to skip children
+ * @param colors an object of color names mapping to RGB values
  */
-const colorPickersDecorations = (view: EditorView, discoverColors: DiscoverColors): DecorationSet => {
+const colorPickersDecorations = (
+	view: EditorView,
+	discoverColors: DiscoverColors,
+	colors?: Record<string, RGB>,
+): DecorationSet => {
 	const widgets: Range<Decoration>[] = [],
 		{state, visibleRanges} = view,
 		tree = syntaxTree(state);
@@ -86,7 +91,7 @@ const colorPickersDecorations = (view: EditorView, discoverColors: DiscoverColor
 						} else if (value.startsWith('#')) {
 							data = parseColorLiteral(value);
 						} else {
-							data = parseNamedColor(value);
+							data = parseNamedColor(value, colors);
 						}
 						if (!data) {
 							continue;
@@ -152,7 +157,7 @@ export const makeColorPicker = (discoverColors: DiscoverColors, colors?: Record<
 			/** @class */
 			constructor(view: EditorView) {
 				this.readOnly = view.state.readOnly;
-				this.decorations = colorPickersDecorations(view, discoverColors);
+				this.decorations = colorPickersDecorations(view, discoverColors, colors);
 			}
 
 			/** @implements */
@@ -160,7 +165,7 @@ export const makeColorPicker = (discoverColors: DiscoverColors, colors?: Record<
 				const {readOnly} = view.state;
 				if (docChanged || viewportChanged || readOnly !== this.readOnly) {
 					this.readOnly = readOnly;
-					this.decorations = colorPickersDecorations(view, discoverColors);
+					this.decorations = colorPickersDecorations(view, discoverColors, colors);
 				}
 			}
 		},

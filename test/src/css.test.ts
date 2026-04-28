@@ -2,6 +2,7 @@ import assert from 'assert';
 import {Text} from '@codemirror/state';
 import {cssLanguage} from '@codemirror/lang-css';
 import {htmlLanguage} from '@codemirror/lang-html';
+import namedColors from 'color-name';
 import {parseCallExpression, parseColorLiteral, parseNamedColor} from '../../dist/color.js';
 import {discoverColorsInCSS} from '../../dist/css.js';
 import type {RGB, ColorData, WidgetOptions} from '../../dist/types';
@@ -213,10 +214,10 @@ describe('discovering CSS colors', () => {
 			legacy: true,
 			spaced: false,
 		};
-		assert.strictEqual(parseNamedColor('ANY'), false);
-		assert.strictEqual(parseNamedColor('__proto__'), false);
-		assert.deepStrictEqual(parseNamedColor('red'), expected);
-		assert.deepStrictEqual(parseNamedColor('RED'), expected);
+		assert.strictEqual(parseNamedColor('ANY', namedColors), false);
+		assert.strictEqual(parseNamedColor('__proto__', namedColors), false);
+		assert.deepStrictEqual(parseNamedColor('red', namedColors), expected);
+		assert.deepStrictEqual(parseNamedColor('RED', namedColors), expected);
 	});
 
 	it('discovers colors in CSS code', () => {
@@ -252,7 +253,7 @@ describe('discovering CSS colors', () => {
 					{from, to},
 				);
 				assert.deepStrictEqual(
-					parseCallExpression(str) || parseColorLiteral(str) || parseNamedColor(str),
+					parseCallExpression(str) || parseColorLiteral(str) || parseNamedColor(str, namedColors),
 					expected,
 				);
 			}

@@ -1,7 +1,6 @@
 import rgb from 'color-space/rgb.js';
 import 'color-space/hsl.js';
 import colorRgba from 'color-rgba';
-import namedColors from 'color-name';
 import {numToHex} from '@bhsd/common';
 import type {WidgetOptions, RGB, ColorData} from './types';
 
@@ -65,13 +64,14 @@ export const parseColorLiteral = (colorLiteral: string): ColorData | false => {
 /**
  * Parses a named color (e.g. `red`, `blue`, `rebeccapurple`)
  * @param colorName the named color text
+ * @param colors an object mapping color names to RGB values
  */
-export const parseNamedColor = (colorName: string): ColorData | false => {
+export const parseNamedColor = (colorName: string, colors?: Record<string, RGB>): ColorData | false => {
 	const lcName = colorName.toLowerCase();
-	if (!Object.prototype.hasOwnProperty.call(namedColors, lcName)) {
+	if (!colors || !Object.prototype.hasOwnProperty.call(colors, lcName)) {
 		return false;
 	}
-	const color = namedColors[lcName as keyof typeof namedColors];
+	const color = colors[lcName]!;
 	return {
 		colorType: 'named',
 		color,
