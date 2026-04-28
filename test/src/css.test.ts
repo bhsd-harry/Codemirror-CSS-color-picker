@@ -2,8 +2,9 @@ import assert from 'assert';
 import {Text} from '@codemirror/state';
 import {cssLanguage} from '@codemirror/lang-css';
 import {htmlLanguage} from '@codemirror/lang-html';
-import {parseCallExpression, parseColorLiteral, parseNamedColor, discoverColorsInCSS} from '../../dist/css.js';
-import type {RGB, ColorData, WidgetOptions} from '../../dist/css';
+import {parseCallExpression, parseColorLiteral, parseNamedColor} from '../../dist/color.js';
+import {discoverColorsInCSS} from '../../dist/css.js';
+import type {RGB, ColorData, WidgetOptions} from '../../dist/types';
 
 const rgbTest = (rgb: RGB, expected = rgb): void => {
 	const rgbStr = rgb.map(c => c > 0 && c < 1 ? `${c * 100}%` : String(c));
@@ -233,7 +234,7 @@ describe('discovering CSS colors', () => {
 			htmlCode = `<style>${cssCode}</style>`,
 			htmlTree = htmlLanguage.parser.parse(htmlCode),
 			htmlDoc = Text.of(htmlCode.split('\n'));
-		const mockTest = (pos: number, type: string, str: string, expected?: ColorData | false): void => {
+		const mockTest = (pos: number, type: string, str: string, expected: ColorData | false = false): void => {
 			const settings = [
 				[0, cssTree, cssDoc],
 				[7, htmlTree, htmlDoc],
@@ -248,11 +249,15 @@ describe('discovering CSS colors', () => {
 				assert.strictEqual(doc.sliceString(from, to), str);
 				assert.deepStrictEqual(
 					discoverColorsInCSS(tree, node, doc),
-					expected && {...expected, from, to},
+					{from, to},
+				);
+				assert.deepStrictEqual(
+					parseCallExpression(str) || parseColorLiteral(str) || parseNamedColor(str),
+					expected,
 				);
 			}
 		};
-		mockTest(16, 'ValueName', 'auto', false);
+		mockTest(16, 'ValueName', 'auto');
 		mockTest(31, 'CallExpression', 'var(--top)');
 		mockTest(
 			54,
@@ -351,37 +356,26 @@ describe('discovering CSS colors', () => {
 			">`,
 			tree = htmlLanguage.parser.parse(code),
 			doc = Text.of(code.split('\n'));
-		const mockTest = (
-			pos: number,
-			type: string,
-			str: string,
-			expected?: (Omit<WidgetOptions, 'from' | 'to'> & {content: string})[] | false,
-		): void => {
+		const mockTest = (pos: number, type: string, str: string, expected: string[] | false = false): void => {
 			const node = tree.resolve(pos),
 				{from, to, name} = node;
 			assert.strictEqual(name, type);
 			assert.strictEqual(code.slice(from, to), str);
 			const result = discoverColorsInCSS(tree, node, doc) as WidgetOptions[] | false | undefined;
 			assert.deepStrictEqual(
-				result && result.map(({from: f, to: t, ...e}) => ({...e, content: code.slice(f, t)})),
+				result && result.map(({from: f, to: t}) => code.slice(f, t)),
 				expected,
 			);
 		};
-		mockTest(8, 'AttributeValue', '"aa"', false);
-		mockTest(50, 'UnquotedAttributeValue', 'bb', false);
+		mockTest(8, 'AttributeValue', '"aa"');
+		mockTest(50, 'UnquotedAttributeValue', 'bb');
 		mockTest(
 			18,
 			'UnquotedAttributeValue',
 			'width:auto;color:red',
 			[
-				{
-					colorType: 'named',
-					color: [255, 0, 0],
-					alpha: 1,
-					legacy: true,
-					spaced: false,
-					content: 'red',
-				},
+				'auto',
+				'red',
 			],
 		);
 		mockTest(
@@ -395,54 +389,14 @@ describe('discovering CSS colors', () => {
 				background-image: linear-gradient(0deg, blue, #0f0 40%, hsla(0deg 100 50));
 			"`,
 			[
-				{
-					content: 'rgb(255 0 0 / 0.5)',
-					colorType: 'rgb',
-					color: [255, 0, 0],
-					alpha: 0.5,
-					legacy: false,
-					spaced: true,
-				},
-				{
-					content: '#f008',
-					colorType: 'hex',
-					color: [255, 0, 0],
-					alpha: 8 * 17 / 255,
-					legacy: false,
-					spaced: false,
-				},
-				{
-					content: 'hsl(33,55%,77%)',
-					colorType: 'hsl',
-					color: [229, 200, 164],
-					alpha: 1,
-					legacy: true,
-					spaced: false,
-				},
-				{
-					content: 'blue',
-					colorType: 'named',
-					color: [0, 0, 255],
-					alpha: 1,
-					legacy: true,
-					spaced: false,
-				},
-				{
-					content: '#0f0',
-					colorType: 'hex',
-					color: [0, 255, 0],
-					alpha: 1,
-					legacy: true,
-					spaced: false,
-				},
-				{
-					content: 'hsla(0deg 100 50)',
-					colorType: 'hsla',
-					color: [255, 0, 0],
-					alpha: 1,
-					legacy: false,
-					spaced: true,
-				},
+				'var(--top)',
+				'rgb(255 0 0 / 0.5)',
+				'#f008',
+				'hsl(33,55%,77%)',
+				'linear-gradient(0deg, blue, #0f0 40%, hsla(0deg 100 50))',
+				'blue',
+				'#0f0',
+				'hsla(0deg 100 50)',
 			],
 		);
 	});

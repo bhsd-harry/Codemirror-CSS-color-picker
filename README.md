@@ -7,18 +7,16 @@ A CodeMirror extension that adds a color picker input next to CSS color values. 
 ## Usage
 
 ```ts
-import {basicSetup} from 'codemirror';
 import {EditorState} from '@codemirror/state';
 import {EditorView} from '@codemirror/view';
 import {css} from '@codemirror/lang-css';
 import {colorPicker} from '@bhsd/codemirror-css-color-picker';
 
 new EditorView({
-	parent: document.querySelector('#editor'),
+	parent: document.body,
 	state: EditorState.create({
 		doc: '.wow {\n\tcolor: #fff;\n}',
 		extensions: [
-			basicSetup,
 			css(),
 			colorPicker,
 		],

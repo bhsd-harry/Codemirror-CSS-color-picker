@@ -3,12 +3,11 @@ import {syntaxTree} from '@codemirror/language';
 import namedColors from 'color-name';
 import {intToHex} from '@bhsd/common';
 import {discoverColorsInCSS} from './css.js';
-import {colorToString} from './color.js';
+import {colorToString, parseCallExpression, parseColorLiteral, parseNamedColor} from './color.js';
 import type {ViewUpdate, DecorationSet, PluginValue} from '@codemirror/view';
 import type {Range, Extension} from '@codemirror/state';
-import type {DiscoverColors, WidgetOptions, RGB} from './css';
+import type {DiscoverColors, WidgetOptions, RGB, ColorData} from './types';
 
-export {parseCallExpression, parseColorLiteral, parseNamedColor} from './css.js';
 export {namedColors};
 export type {DiscoverColors, WidgetOptions};
 
@@ -44,7 +43,7 @@ class ColorPickerWidget extends WidgetType {
 		const picker = document.createElement('input');
 		picker.type = 'color';
 		picker.value = `#${this.state.color.map(c => intToHex(c)).join('')}`;
-		if (this.readonly) {
+		if (this.readonly || this.state.colorType === 'unknown') {
 			picker.disabled = true;
 		}
 		pickerState.set(picker, this.state);
@@ -79,9 +78,24 @@ const colorPickersDecorations = (view: EditorView, discoverColors: DiscoverColor
 					return widgetOptions;
 				}
 				for (const wo of Array.isArray(widgetOptions) ? widgetOptions : [widgetOptions]) {
+					if ((wo as Partial<WidgetOptions>).colorType !== 'unknown') {
+						const value = state.sliceDoc(wo.from, wo.to);
+						let data: ColorData | false | undefined;
+						if (value.includes('(')) {
+							data = parseCallExpression(value);
+						} else if (value.startsWith('#')) {
+							data = parseColorLiteral(value);
+						} else {
+							data = parseNamedColor(value);
+						}
+						if (!data) {
+							continue;
+						}
+						Object.assign(wo, data);
+					}
 					widgets.push(
 						Decoration.widget({
-							widget: new ColorPickerWidget(wo, state.readOnly),
+							widget: new ColorPickerWidget(wo as WidgetOptions, state.readOnly),
 							side: 1,
 						}).range(wo.from),
 					);

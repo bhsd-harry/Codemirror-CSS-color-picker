@@ -1,7 +1,7 @@
 import assert from 'assert';
 import namedColors from 'color-name';
 import {getDelimiter, alphaToString, colorToString} from '../../dist/color.js';
-import type {WidgetOptions} from '../../dist/css';
+import type {WidgetOptions} from '../../dist/types';
 
 const mockTest = (alpha: number, expected: [string, string, string]): void => {
 	assert.strictEqual(alphaToString(alpha, false, true), expected[0]);

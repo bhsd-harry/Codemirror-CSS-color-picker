@@ -1,8 +1,85 @@
 import rgb from 'color-space/rgb.js';
 import 'color-space/hsl.js';
 import colorRgba from 'color-rgba';
+import namedColors from 'color-name';
 import {numToHex} from '@bhsd/common';
-import type {WidgetOptions, RGB} from './css';
+import type {WidgetOptions, RGB, ColorData} from './types';
+
+const rgbCallExpRegex =
+	/^rgba?\(\s*(?:\d*\.)?\d+%?(?:\s|\s*,)\s*(?:\d*\.)?\d+%?(?:\s|\s*,)\s*(?:\d*\.)?\d+%?\s*(?:[,/]\s*(?:\d*\.)?\d+%?\s*)?\)$/iu;
+const hslCallExpRegex =
+	/^hsla?\(\s*(?:\d*\.)?\d+(?:deg|g?rad|turn)?(?:\s|\s*,)\s*(?:\d*\.)?\d+%?(?:\s|\s*,)\s*(?:\d*\.)?\d+%?\s*(?:[,/]\s*(?:\d*\.)?\d+%?\s*)?\)$/iu;
+const hexRegex = /^#(?:[\da-f]{3,4}|(?:[\da-f]{2}){3,4})$/iu;
+
+/**
+ * Parses a CSS color function call expression (including `rgb()`, `rgba()`, `hsl()`, `hsla()`)
+ * @param callExp the full text of the call expression, including function name and parentheses
+ */
+export const parseCallExpression = (callExp: string): ColorData | false | undefined => {
+	const fn = callExp.split('(', 1)[0]!.toLowerCase();
+	switch (fn) {
+		case 'rgba':
+		case 'rgb':
+			if (!rgbCallExpRegex.test(callExp)) {
+				return undefined;
+			}
+			break;
+		case 'hsla':
+		case 'hsl':
+			if (!hslCallExpRegex.test(callExp)) {
+				return undefined;
+			}
+			break;
+		default:
+			return undefined;
+	}
+	const [r, g, b, alpha] = colorRgba(callExp);
+	return alpha !== undefined && {
+		colorType: fn,
+		color: [r!, g!, b!].map(Math.round) as RGB,
+		alpha,
+		legacy: callExp.includes(','),
+		spaced: /\s/u.test(callExp),
+	};
+};
+
+/**
+ * Parses a hex color literal (e.g. `#ff0000`, `#f00`, `#ff000080`, `#f008`)
+ * @param colorLiteral the hex color literal text
+ */
+export const parseColorLiteral = (colorLiteral: string): ColorData | false => {
+	if (!hexRegex.test(colorLiteral)) {
+		return false;
+	}
+	const [r, g, b, alpha] = colorRgba(colorLiteral),
+		{length} = colorLiteral;
+	return alpha !== undefined && {
+		colorType: 'hex',
+		color: [r!, g!, b!],
+		alpha,
+		legacy: length === 4 || length === 7,
+		spaced: false,
+	};
+};
+
+/**
+ * Parses a named color (e.g. `red`, `blue`, `rebeccapurple`)
+ * @param colorName the named color text
+ */
+export const parseNamedColor = (colorName: string): ColorData | false => {
+	const lcName = colorName.toLowerCase();
+	if (!Object.prototype.hasOwnProperty.call(namedColors, lcName)) {
+		return false;
+	}
+	const color = namedColors[lcName as keyof typeof namedColors];
+	return {
+		colorType: 'named',
+		color,
+		alpha: 1,
+		legacy: true,
+		spaced: false,
+	};
+};
 
 export const getDelimiter = (legacy: boolean, spaced: boolean): string => legacy ? `,${spaced ? ' ' : ''}` : ' ';
 
@@ -43,8 +120,10 @@ export const colorToString = (
 				}
 			}
 			// fall through
-		default:
+		case 'hex':
 			// hex color literal
 			return value + (alpha === 1 ? '' : numToHex(alpha));
+		default:
+			throw new Error('Unknown color type');
 	}
 };
