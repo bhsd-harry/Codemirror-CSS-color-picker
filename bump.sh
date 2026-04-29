@@ -3,7 +3,7 @@ if [[ $2 == 'npm' ]]
 then
 	npm publish --tag "${3-latest}"
 else
-	npm run lint && npm run build
+	npm run lint && npm run build && npm run build:test
 	if [[ $? -eq 0 ]]
 	then
 		git fetch --prune --prune-tags

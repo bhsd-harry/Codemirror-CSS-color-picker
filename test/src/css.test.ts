@@ -37,14 +37,14 @@ const rgbTest = (rgb: RGB, expected = rgb): void => {
 			exp,
 		);
 	}
-	for (const alpha of ['0.55', '.55', '55%']) {
+	for (const alpha of ['0.555', '.555', '55.5%']) {
 		for (const delimiter of [',', ', ']) {
 			const exp = `rgb(${rgbStr.join(delimiter)},${alpha})`;
 			assert.deepStrictEqual(
 				parseCallExpression(exp),
 				{
 					color: expected,
-					alpha: 0.55,
+					alpha: 0.555,
 					colorType: 'rgb',
 					legacy: true,
 					spaced: delimiter === ', ',
@@ -57,7 +57,7 @@ const rgbTest = (rgb: RGB, expected = rgb): void => {
 			parseCallExpression(exp),
 			{
 				color: expected,
-				alpha: 0.55,
+				alpha: 0.555,
 				colorType: 'rgb',
 				legacy: false,
 				spaced: true,
@@ -67,8 +67,9 @@ const rgbTest = (rgb: RGB, expected = rgb): void => {
 	}
 };
 
-const hslTest = (hsl: RGB, expected = hsl): void => {
-	const hslStr = [`${hsl[0]}deg`, `${hsl[1]}%`, `${hsl[2]}%`];
+const hslTest = (hsl: RGB, expected: RGB): void => {
+	const [h, s, l] = hsl,
+		hslStr = [`${h}deg`, `${s}%`, `${l}%`];
 	for (const fn of ['hsl', 'HSL', 'hsla', 'HSLA']) {
 		let exp = `${fn}( ${hsl.map(String).join(' ')} )`;
 		assert.deepStrictEqual(
@@ -109,14 +110,14 @@ const hslTest = (hsl: RGB, expected = hsl): void => {
 			exp,
 		);
 	}
-	for (const alpha of ['0.55', '.55', '55%']) {
+	for (const alpha of ['0.555', '.555', '55.5%']) {
 		for (const delimiter of [',', ', ']) {
 			const exp = `hsl(${hslStr.join(delimiter)},${alpha})`;
 			assert.deepStrictEqual(
 				parseCallExpression(exp),
 				{
 					color: expected,
-					alpha: 0.55,
+					alpha: 0.555,
 					colorType: 'hsl',
 					legacy: true,
 					spaced: delimiter === ', ',
@@ -129,7 +130,22 @@ const hslTest = (hsl: RGB, expected = hsl): void => {
 			parseCallExpression(exp),
 			{
 				color: expected,
-				alpha: 0.55,
+				alpha: 0.555,
+				colorType: 'hsl',
+				legacy: false,
+				spaced: true,
+			} satisfies ColorData,
+			exp,
+		);
+	}
+	const units = [['', 1], ['deg', 1], ['rad', 180 / Math.PI], ['grad', 0.9], ['turn', 360]] as const;
+	for (const [unit, factor] of units) {
+		const exp = `hsl( ${(h / factor).toFixed(4)}${unit} ${s} ${l} )`;
+		assert.deepStrictEqual(
+			parseCallExpression(exp),
+			{
+				color: expected,
+				alpha: 1,
 				colorType: 'hsl',
 				legacy: false,
 				spaced: true,
@@ -164,8 +180,11 @@ describe('discovering CSS colors', () => {
 			},
 		);
 		rgbTest([255, 0, 0]);
+		rgbTest([100.6, 100.4, 100], [101, 100, 100]);
 		rgbTest([0.3, 0.4, 0.5], [77, 102, 128]);
+		rgbTest([0.333, 0.444, 0.555], [85, 113, 142]);
 		hslTest([0, 100, 50], [255, 0, 0]);
+		hslTest([0, 99.9, 50.1], [255, 1, 1]);
 		hslTest([33, 55, 77], [229, 200, 164]);
 	});
 
