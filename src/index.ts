@@ -119,14 +119,16 @@ const colorPickerTheme = EditorView.baseTheme({
 		marginRight: '0.6ch',
 		height: '1em',
 		width: '1em',
-		transform: 'translateY(1px)',
+		transform: 'translateY(0.1em)',
 
-		'& input[type="color"]': {
+		'&>input[type="color"]': {
 			height: '100%',
 			width: '100%',
 			padding: 0,
+			appearance: 'none',
 			border: 'none',
-			outline: '1px solid #eee',
+			borderRadius: 0,
+			outline: '1px solid #ddd',
 			'&:enabled': {
 				cursor: 'pointer',
 			},
@@ -135,9 +137,11 @@ const colorPickerTheme = EditorView.baseTheme({
 			},
 			'&::-webkit-color-swatch': {
 				border: 'none',
+				borderRadius: 0,
 			},
 			'&::-moz-color-swatch': {
 				border: 'none',
+				borderRadius: 0,
 			},
 		},
 	},

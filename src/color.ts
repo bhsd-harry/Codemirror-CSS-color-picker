@@ -68,7 +68,7 @@ export const parseColorLiteral = (colorLiteral: string): ColorData | false => {
  */
 export const parseNamedColor = (colorName: string, colors?: Record<string, RGB>): ColorData | false => {
 	const lcName = colorName.toLowerCase();
-	if (!colors || !Object.prototype.hasOwnProperty.call(colors, lcName)) {
+	if (!colors || !Object.hasOwn(colors, lcName)) {
 		return false;
 	}
 	const color = colors[lcName]!;

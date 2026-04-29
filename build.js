@@ -19,7 +19,7 @@ const /** @type {esbuild.BuildOptions} */ config = {
 	outfile: 'build/index.js',
 	charset: 'utf8',
 	bundle: true,
-	target: 'es2017',
+	target: 'es2022',
 	format: 'esm',
 	logLevel: 'info',
 	plugins: [plugin],

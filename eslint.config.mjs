@@ -1,5 +1,4 @@
 import config, {browser} from '@bhsd/code-standard';
-import esX from 'eslint-plugin-es-x';
 
 export default [
 	{
@@ -22,18 +21,6 @@ export default [
 					],
 				},
 			],
-		},
-	},
-	{
-		files: ['src/*.ts'],
-		...esX.configs['flat/restrict-to-es2017'],
-	},
-	{
-		files: ['src/*.ts'],
-		rules: {
-			'prefer-object-has-own': 0,
-			'prefer-object-spread': 0,
-			'es-x/no-optional-chaining': 0,
 		},
 	},
 	{
