@@ -23,12 +23,4 @@ export default [
 			],
 		},
 	},
-	{
-		files: ['test/src/*.ts'],
-		languageOptions: {
-			parserOptions: {
-				project: './test/tsconfig.json',
-			},
-		},
-	},
 ];
