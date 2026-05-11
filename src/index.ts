@@ -204,4 +204,4 @@ export const makeColorPicker = (discoverColors: DiscoverColors, colors?: Record<
 ];
 
 /** Default color picker plugin for CSS and HTML */
-export const colorPicker = /* @__PURE__ */ makeColorPicker(discoverColorsInCSS, namedColors);
+export const colorPicker = /* #__PURE__ */ makeColorPicker(discoverColorsInCSS, namedColors);
