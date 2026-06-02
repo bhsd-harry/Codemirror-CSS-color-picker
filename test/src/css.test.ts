@@ -2,7 +2,7 @@ import assert from 'assert';
 import {Text} from '@codemirror/state';
 import {cssLanguage} from '@codemirror/lang-css';
 import {htmlLanguage} from '@codemirror/lang-html';
-import namedColors from 'color-name';
+import {namedColors} from '@bhsd/common';
 import {parseCallExpression, parseColorLiteral, parseNamedColor} from '../../dist/color.js';
 import {discoverColorsInCSS} from '../../dist/css.js';
 import type {RGB, ColorData, WidgetOptions} from '../../dist/types';
@@ -157,8 +157,8 @@ const hslTest = (hsl: RGB, expected: RGB): void => {
 
 describe('discovering CSS colors', () => {
 	it('parses call expressions', () => {
-		assert.strictEqual(parseCallExpression('hwb(0 100% 0)'), undefined);
-		assert.strictEqual(parseCallExpression('rgb(255 0)'), undefined);
+		assert.strictEqual(parseCallExpression('hwb(0 100% 0)'), false);
+		assert.strictEqual(parseCallExpression('rgb(255 0)'), false);
 		assert.deepStrictEqual(
 			parseCallExpression('rgb(255 0 0.3)'),
 			{
@@ -181,7 +181,7 @@ describe('discovering CSS colors', () => {
 		);
 		rgbTest([255, 0, 0]);
 		rgbTest([100.6, 100.4, 100], [101, 100, 100]);
-		rgbTest([0.3, 0.4, 0.5], [77, 102, 128]);
+		rgbTest([0.3, 0.4, 0.5], [77, 102, 127]);
 		rgbTest([0.333, 0.444, 0.555], [85, 113, 142]);
 		hslTest([0, 100, 50], [255, 0, 0]);
 		hslTest([0, 99.9, 50.1], [255, 1, 1]);
@@ -209,7 +209,7 @@ describe('discovering CSS colors', () => {
 		);
 		assert.deepStrictEqual(
 			parseColorLiteral('#f008'),
-			{...expected, legacy: false, alpha: 8 * 17 / 255},
+			{...expected, legacy: false, alpha: 0.53},
 		);
 		assert.deepStrictEqual(
 			parseColorLiteral('#ff0000'),
@@ -221,7 +221,7 @@ describe('discovering CSS colors', () => {
 		);
 		assert.deepStrictEqual(
 			parseColorLiteral('#ff000088'),
-			{...expected, legacy: false, alpha: 8 * 17 / 255},
+			{...expected, legacy: false, alpha: 0.53},
 		);
 	});
 
@@ -310,7 +310,7 @@ describe('discovering CSS colors', () => {
 			{
 				colorType: 'hex',
 				color: [255, 0, 0],
-				alpha: 8 * 17 / 255,
+				alpha: 0.53,
 				legacy: false,
 				spaced: false,
 			},

@@ -1,42 +1,47 @@
-import rgb from 'color-space/rgb.js';
-import 'color-space/hsl.js';
-import colorRgba from 'color-rgba';
-import {numToHex} from '@bhsd/common';
+import {numToHex, rgba} from '@bhsd/common';
+import type {Colord} from 'colord';
 import type {WidgetOptions, RGB, ColorData} from './types';
 
 const rgbCallExpRegex =
-	/^rgba?\(\s*(?:\d*\.)?\d+%?(?:\s|\s*,)\s*(?:\d*\.)?\d+%?(?:\s|\s*,)\s*(?:\d*\.)?\d+%?\s*(?:[,/]\s*(?:\d*\.)?\d+%?\s*)?\)$/iu;
+	/^rgba?\(\s*[+-]?(?:\d*\.)?\d+%?(?:\s|\s*,)\s*[+-]?(?:\d*\.)?\d+%?(?:\s|\s*,)\s*[+-]?(?:\d*\.)?\d+%?\s*(?:[,/]\s*[+-]?(?:\d*\.)?\d+%?\s*)?\)$/iu;
 const hslCallExpRegex =
-	/^hsla?\(\s*(?:\d*\.)?\d+(?:deg|g?rad|turn)?(?:\s|\s*,)\s*(?:\d*\.)?\d+%?(?:\s|\s*,)\s*(?:\d*\.)?\d+%?\s*(?:[,/]\s*(?:\d*\.)?\d+%?\s*)?\)$/iu;
+	/^hsla?\(\s*[+-]?(?:\d*\.)?\d+(?:deg|g?rad|turn)?(?:\s|\s*,)\s*[+-]?(?:\d*\.)?\d+%?(?:\s|\s*,)\s*[+-]?(?:\d*\.)?\d+%?\s*(?:[,/]\s*[+-]?(?:\d*\.)?\d+%?\s*)?\)$/iu;
 const hexRegex = /^#(?:[\da-f]{3,4}|(?:[\da-f]{2}){3,4})$/iu;
+
+const convertColor = (color: Colord): Pick<ColorData, 'color' | 'alpha'> => {
+	const {r, g, b, a} = color.toRgb();
+	return {
+		color: [r, g, b].map(Math.round) as RGB,
+		alpha: a,
+	};
+};
 
 /**
  * Parses a CSS color function call expression (including `rgb()`, `rgba()`, `hsl()`, `hsla()`)
  * @param callExp the full text of the call expression, including function name and parentheses
  */
-export const parseCallExpression = (callExp: string): ColorData | false | undefined => {
+export const parseCallExpression = (callExp: string): ColorData | false => {
 	const fn = callExp.split('(', 1)[0]!.toLowerCase();
 	switch (fn) {
 		case 'rgba':
 		case 'rgb':
 			if (!rgbCallExpRegex.test(callExp)) {
-				return undefined;
+				return false;
 			}
 			break;
 		case 'hsla':
 		case 'hsl':
 			if (!hslCallExpRegex.test(callExp)) {
-				return undefined;
+				return false;
 			}
 			break;
 		default:
-			return undefined;
+			return false;
 	}
-	const [r, g, b, alpha] = colorRgba(callExp);
-	return alpha !== undefined && {
+	const color = rgba(callExp);
+	return color && {
+		...convertColor(color),
 		colorType: fn,
-		color: [r!, g!, b!].map(Math.round) as RGB,
-		alpha,
 		legacy: callExp.includes(','),
 		spaced: /\s/u.test(callExp),
 	};
@@ -50,12 +55,11 @@ export const parseColorLiteral = (colorLiteral: string): ColorData | false => {
 	if (!hexRegex.test(colorLiteral)) {
 		return false;
 	}
-	const [r, g, b, alpha] = colorRgba(colorLiteral),
+	const color = rgba(colorLiteral),
 		{length} = colorLiteral;
-	return alpha !== undefined && {
+	return color && {
+		...convertColor(color),
 		colorType: 'hex',
-		color: [r!, g!, b!],
-		alpha,
 		legacy: length === 4 || length === 7,
 		spaced: false,
 	};
@@ -66,16 +70,11 @@ export const parseColorLiteral = (colorLiteral: string): ColorData | false => {
  * @param colorName the named color text
  * @param colors an object mapping color names to RGB values
  */
-export const parseNamedColor = (colorName: string, colors?: Record<string, RGB>): ColorData | false => {
-	const lcName = colorName.toLowerCase();
-	if (!colors || !Object.hasOwn(colors, lcName)) {
-		return false;
-	}
-	const color = colors[lcName]!;
-	return {
+export const parseNamedColor = (colorName: string, colors?: Map<string, string>): ColorData | false => {
+	const color = rgba(colorName, colors);
+	return color && {
+		...convertColor(color),
 		colorType: 'named',
-		color,
-		alpha: 1,
 		legacy: true,
 		spaced: false,
 	};
@@ -91,20 +90,21 @@ export const alphaToString = (alpha: number, legacy: boolean, spaced: boolean): 
 export const colorToString = (
 	{color, alpha, colorType, legacy, spaced}: WidgetOptions,
 	value: string,
-	colors?: Record<string, RGB>,
+	colors?: Map<string, string>,
 ): string | false => {
-	const currentColor = colorRgba(value).slice(0, 3) as RGB;
-	if (currentColor.every((c, i) => c === Math.round(color[i]!))) {
+	const result = rgba(value) as Colord,
+		{r, g, b} = result.toRgb();
+	if (r === Math.round(color[0]) && g === Math.round(color[1]) && b === Math.round(color[2])) {
 		return false;
 	}
 	const delimiter = getDelimiter(legacy, spaced);
 	switch (colorType) {
 		case 'rgba':
 		case 'rgb':
-			return `${colorType}(${currentColor.join(delimiter)}${alphaToString(alpha, legacy, spaced)})`;
+			return `${colorType}(${[r, g, b].join(delimiter)}${alphaToString(alpha, legacy, spaced)})`;
 		case 'hsla':
 		case 'hsl': {
-			const [h, s, l] = rgb.hsl(currentColor.slice(0, 3) as RGB);
+			const {h, s, l} = result.toHsl();
 			return `${colorType}(${
 				[Math.round(h), `${Math.round(s)}%`, `${Math.round(l)}%`].join(delimiter)
 			}${alphaToString(alpha, legacy, spaced)})`;
@@ -112,9 +112,7 @@ export const colorToString = (
 		case 'named':
 			if (colors && alpha === 1) {
 				// If the color is an exact match for another named color, prefer retaining name
-				const colorName = Object.entries(colors)
-					.find(([, colorValues]) => colorValues.every((c, i) => c === currentColor[i]!))
-					?.[0];
+				const colorName = [...colors].find(([, colorValue]) => colorValue === value)?.[0];
 				if (colorName) {
 					return colorName;
 				}

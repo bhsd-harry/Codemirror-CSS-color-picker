@@ -1,5 +1,5 @@
 import assert from 'assert';
-import namedColors from 'color-name';
+import {namedColors} from '@bhsd/common';
 import {getDelimiter, alphaToString, colorToString} from '../../dist/color.js';
 import type {WidgetOptions} from '../../dist/types';
 

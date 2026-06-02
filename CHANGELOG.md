@@ -1,4 +1,12 @@
 <!-- markdownlint-disable first-line-h1 -->
+## 7.3.0
+
+*2026-06-10*
+
+**Changed**
+
+- CSS colors are now parsed using [colord](https://www.npmjs.com/package/colord) instead of unmaintained [color-rgba](https://www.npmjs.com/package/color-rgba)
+
 ## 7.2.0
 
 *2026-06-01*

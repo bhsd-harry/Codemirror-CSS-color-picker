@@ -1,14 +1,12 @@
 import {EditorView, WidgetType, ViewPlugin, Decoration} from '@codemirror/view';
 import {syntaxTree} from '@codemirror/language';
-import namedColors from 'color-name';
-import {intToHex} from '@bhsd/common';
+import {intToHex, namedColors} from '@bhsd/common';
 import {discoverColorsInCSS} from './css.js';
 import {colorToString, parseCallExpression, parseColorLiteral, parseNamedColor} from './color.js';
 import type {ViewUpdate, DecorationSet, PluginValue} from '@codemirror/view';
 import type {Range, Extension} from '@codemirror/state';
-import type {DiscoverColors, WidgetOptions, RGB, ColorData} from './types';
+import type {DiscoverColors, WidgetOptions, ColorData} from './types';
 
-export {namedColors};
 export type {DiscoverColors, WidgetOptions};
 
 export const wrapperClassName = 'cm-css-color-picker-wrapper';
@@ -68,7 +66,7 @@ class ColorPickerWidget extends WidgetType {
 const colorPickersDecorations = (
 	view: EditorView,
 	discoverColors: DiscoverColors,
-	colors?: Record<string, RGB>,
+	colors?: Map<string, string>,
 ): DecorationSet => {
 	const widgets: Range<Decoration>[] = [],
 		{state, visibleRanges} = view,
@@ -85,7 +83,7 @@ const colorPickersDecorations = (
 				for (const wo of Array.isArray(widgetOptions) ? widgetOptions : [widgetOptions]) {
 					if ((wo as Partial<WidgetOptions>).colorType !== 'unknown') {
 						const value = state.sliceDoc(wo.from, wo.to);
-						let data: ColorData | false | undefined;
+						let data: ColorData | false;
 						if (value.includes('(')) {
 							data = parseCallExpression(value);
 						} else if (value.startsWith('#')) {
@@ -152,7 +150,7 @@ const colorPickerTheme = EditorView.baseTheme({
  * @param discoverColors the function to discover colors in a syntax node; return `false` to skip children
  * @param colors an optional object of color names mapping to RGB values
  */
-export const makeColorPicker = (discoverColors: DiscoverColors, colors?: Record<string, RGB>): Extension => [
+export const makeColorPicker = (discoverColors: DiscoverColors, colors?: Map<string, string>): Extension => [
 	ViewPlugin.fromClass(
 		class ColorPickerViewPlugin implements PluginValue {
 			declare readOnly;
