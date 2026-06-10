@@ -44,7 +44,7 @@ export const parseColorLiteral = (colorLiteral: string): ColorData | false => {
  */
 export const parseNamedColor = (colorName: string): ColorData | false => {
 	const color = parse(colorName);
-	return color && color.alpha === 1 && {
+	return color && {
 		...color,
 		colorType: 'named',
 		legacy: true,

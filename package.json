@@ -1,6 +1,6 @@
 {
 	"name": "@bhsd/codemirror-css-color-picker",
-	"version": "7.2.0",
+	"version": "8.0.0",
 	"description": "Enables a color picker input next to CSS colors",
 	"homepage": "https://github.com/bhsd-harry/Codemirror-CSS-color-picker#readme",
 	"bugs": {
@@ -37,10 +37,10 @@
 		"@codemirror/view": "^6.0.0"
 	},
 	"dependencies": {
-		"@bhsd/common": "^2.2.1"
+		"@bhsd/common": "^3.0.0"
 	},
 	"devDependencies": {
-		"@bhsd/code-standard": "^2.6.2",
+		"@bhsd/code-standard": "^2.7.0",
 		"@codemirror/language": "^6.12.3",
 		"@codemirror/lang-css": "^6.3.1",
 		"@codemirror/lang-html": "^6.4.11",

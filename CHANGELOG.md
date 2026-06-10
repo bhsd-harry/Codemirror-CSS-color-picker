@@ -1,7 +1,11 @@
 <!-- markdownlint-disable first-line-h1 -->
-## 7.3.0
+## 8.0.0
 
-*2026-06-10*
+*2026-06-11*
+
+**Added**
+
+- CSS colors with alpha values are now displayed with a checkerboard background to indicate transparency
 
 **Changed**
 

@@ -41,6 +41,7 @@ class ColorPickerWidget extends WidgetType {
 		const picker = document.createElement('input');
 		picker.type = 'color';
 		picker.value = `#${this.state.color.map(c => intToHex(c)).join('')}`;
+		picker.style.opacity = String(this.state.alpha);
 		if (this.readonly || this.state.colorType === 'unknown') {
 			picker.disabled = true;
 		}
@@ -108,6 +109,10 @@ const colorPickersDecorations = (
 	return Decoration.set(widgets);
 };
 
+const getBgImage = (fg: string, bg: string): string =>
+	`linear-gradient(45deg, ${fg} 25%, transparent 25%, transparent 75%, ${fg} 75%),
+linear-gradient(45deg, ${fg} 25%, ${bg} 25%, ${bg} 75%, ${fg} 75%)`;
+
 const colorPickerTheme = EditorView.baseTheme({
 	[`.${wrapperClassName}`]: {
 		display: 'inline-block',
@@ -115,7 +120,11 @@ const colorPickerTheme = EditorView.baseTheme({
 		marginRight: '0.6ch',
 		height: '1em',
 		width: '1em',
+		outline: '1px solid #ddd',
+		position: 'relative',
 		transform: 'translateY(0.1em)',
+		backgroundSize: '0.4em 0.4em',
+		backgroundPosition: '0 0, 0.2em 0.2em',
 
 		'&>input[type="color"]': {
 			height: '100%',
@@ -124,7 +133,9 @@ const colorPickerTheme = EditorView.baseTheme({
 			appearance: 'none',
 			border: 'none',
 			borderRadius: 0,
-			outline: '1px solid #ddd',
+			position: 'absolute',
+			top: 0,
+			left: 0,
 			'&:enabled': {
 				cursor: 'pointer',
 			},
@@ -140,6 +151,12 @@ const colorPickerTheme = EditorView.baseTheme({
 				borderRadius: 0,
 			},
 		},
+	},
+	[`&light .${wrapperClassName}`]: {
+		backgroundImage: getBgImage('#aaa', '#fff'),
+	},
+	[`&dark .${wrapperClassName}`]: {
+		backgroundImage: getBgImage('#888', '#000'),
 	},
 });
 
