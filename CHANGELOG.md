@@ -5,7 +5,7 @@
 
 **Changed**
 
-- CSS colors are now parsed using [colord](https://www.npmjs.com/package/colord) instead of unmaintained [color-rgba](https://www.npmjs.com/package/color-rgba)
+- CSS colors are now parsed using [culori](https://culorijs.org/) instead of unmaintained [color-rgba](https://www.npmjs.com/package/color-rgba)
 
 ## 7.2.0
 

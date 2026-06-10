@@ -1,6 +1,6 @@
 import {EditorView, WidgetType, ViewPlugin, Decoration} from '@codemirror/view';
 import {syntaxTree} from '@codemirror/language';
-import {intToHex, namedColors} from '@bhsd/common';
+import {intToHex} from '@bhsd/common';
 import {discoverColorsInCSS} from './css.js';
 import {colorToString, parseCallExpression, parseColorLiteral, parseNamedColor} from './color.js';
 import type {ViewUpdate, DecorationSet, PluginValue} from '@codemirror/view';
@@ -61,12 +61,10 @@ class ColorPickerWidget extends WidgetType {
  * Compute color picker decorations
  * @param view the editor view for which to compute decorations
  * @param discoverColors the function to discover colors in a syntax node; return `false` to skip children
- * @param colors an object of color names mapping to RGB values
  */
 const colorPickersDecorations = (
 	view: EditorView,
 	discoverColors: DiscoverColors,
-	colors?: Map<string, string>,
 ): DecorationSet => {
 	const widgets: Range<Decoration>[] = [],
 		{state, visibleRanges} = view,
@@ -89,7 +87,7 @@ const colorPickersDecorations = (
 						} else if (value.startsWith('#')) {
 							data = parseColorLiteral(value);
 						} else {
-							data = parseNamedColor(value, colors);
+							data = parseNamedColor(value);
 						}
 						if (!data) {
 							continue;
@@ -148,9 +146,8 @@ const colorPickerTheme = EditorView.baseTheme({
 /**
  * Factory function to create a color picker plugin with the given options
  * @param discoverColors the function to discover colors in a syntax node; return `false` to skip children
- * @param colors an optional object of color names mapping to RGB values
  */
-export const makeColorPicker = (discoverColors: DiscoverColors, colors?: Map<string, string>): Extension => [
+export const makeColorPicker = (discoverColors: DiscoverColors): Extension => [
 	ViewPlugin.fromClass(
 		class ColorPickerViewPlugin implements PluginValue {
 			declare readOnly;
@@ -159,7 +156,7 @@ export const makeColorPicker = (discoverColors: DiscoverColors, colors?: Map<str
 			/** @class */
 			constructor(view: EditorView) {
 				this.readOnly = view.state.readOnly;
-				this.decorations = colorPickersDecorations(view, discoverColors, colors);
+				this.decorations = colorPickersDecorations(view, discoverColors);
 			}
 
 			/** @implements */
@@ -167,7 +164,7 @@ export const makeColorPicker = (discoverColors: DiscoverColors, colors?: Map<str
 				const {readOnly} = view.state;
 				if (docChanged || viewportChanged || readOnly !== this.readOnly) {
 					this.readOnly = readOnly;
-					this.decorations = colorPickersDecorations(view, discoverColors, colors);
+					this.decorations = colorPickersDecorations(view, discoverColors);
 				}
 			}
 		},
@@ -186,7 +183,7 @@ export const makeColorPicker = (discoverColors: DiscoverColors, colors?: Map<str
 						return false;
 					}
 					const state = pickerState.get(target)!,
-						insert = colorToString(state, target.value, colors);
+						insert = colorToString(state, target.value);
 					if (insert) {
 						const {from, to} = state;
 						view.dispatch({
@@ -202,4 +199,4 @@ export const makeColorPicker = (discoverColors: DiscoverColors, colors?: Map<str
 ];
 
 /** Default color picker plugin for CSS and HTML */
-export const colorPicker = /* #__PURE__ */ makeColorPicker(discoverColorsInCSS, namedColors);
+export const colorPicker = /* #__PURE__ */ makeColorPicker(discoverColorsInCSS);

@@ -2,7 +2,6 @@ import assert from 'assert';
 import {Text} from '@codemirror/state';
 import {cssLanguage} from '@codemirror/lang-css';
 import {htmlLanguage} from '@codemirror/lang-html';
-import {namedColors} from '@bhsd/common';
 import {parseCallExpression, parseColorLiteral, parseNamedColor} from '../../dist/color.js';
 import {discoverColorsInCSS} from '../../dist/css.js';
 import type {RGB, ColorData, WidgetOptions} from '../../dist/types';
@@ -181,7 +180,7 @@ describe('discovering CSS colors', () => {
 		);
 		rgbTest([255, 0, 0]);
 		rgbTest([100.6, 100.4, 100], [101, 100, 100]);
-		rgbTest([0.3, 0.4, 0.5], [77, 102, 127]);
+		rgbTest([0.3, 0.4, 0.5], [77, 102, 128]);
 		rgbTest([0.333, 0.444, 0.555], [85, 113, 142]);
 		hslTest([0, 100, 50], [255, 0, 0]);
 		hslTest([0, 99.9, 50.1], [255, 1, 1]);
@@ -209,7 +208,7 @@ describe('discovering CSS colors', () => {
 		);
 		assert.deepStrictEqual(
 			parseColorLiteral('#f008'),
-			{...expected, legacy: false, alpha: 0.53},
+			{...expected, legacy: false, alpha: 0.533},
 		);
 		assert.deepStrictEqual(
 			parseColorLiteral('#ff0000'),
@@ -221,7 +220,7 @@ describe('discovering CSS colors', () => {
 		);
 		assert.deepStrictEqual(
 			parseColorLiteral('#ff000088'),
-			{...expected, legacy: false, alpha: 0.53},
+			{...expected, legacy: false, alpha: 0.533},
 		);
 	});
 
@@ -233,10 +232,10 @@ describe('discovering CSS colors', () => {
 			legacy: true,
 			spaced: false,
 		};
-		assert.strictEqual(parseNamedColor('ANY', namedColors), false);
-		assert.strictEqual(parseNamedColor('__proto__', namedColors), false);
-		assert.deepStrictEqual(parseNamedColor('red', namedColors), expected);
-		assert.deepStrictEqual(parseNamedColor('RED', namedColors), expected);
+		assert.strictEqual(parseNamedColor('ANY'), false);
+		assert.strictEqual(parseNamedColor('__proto__'), false);
+		assert.deepStrictEqual(parseNamedColor('red'), expected);
+		assert.deepStrictEqual(parseNamedColor('RED'), expected);
 	});
 
 	it('discovers colors in CSS code', () => {
@@ -271,10 +270,15 @@ describe('discovering CSS colors', () => {
 					discoverColorsInCSS(tree, node, doc),
 					{from, to},
 				);
-				assert.deepStrictEqual(
-					parseCallExpression(str) || parseColorLiteral(str) || parseNamedColor(str, namedColors),
-					expected,
-				);
+				let result: ColorData | false;
+				if (str.includes('(')) {
+					result = parseCallExpression(str);
+				} else if (str.startsWith('#')) {
+					result = parseColorLiteral(str);
+				} else {
+					result = parseNamedColor(str);
+				}
+				assert.deepStrictEqual(result, expected);
 			}
 		};
 		mockTest(16, 'ValueName', 'auto');
@@ -310,7 +314,7 @@ describe('discovering CSS colors', () => {
 			{
 				colorType: 'hex',
 				color: [255, 0, 0],
-				alpha: 0.53,
+				alpha: 0.533,
 				legacy: false,
 				spaced: false,
 			},
