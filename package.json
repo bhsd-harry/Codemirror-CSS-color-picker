@@ -28,7 +28,7 @@
 		"lint:ts": "tsc --noEmit && eslint --cache .",
 		"lint:md": "markdownlint-cli2 '**/*.md'",
 		"lint": "npm run lint:ts && npm run lint:md",
-		"build": "tsc && eslint --no-config-lookup -c eslint.dist.mjs dist/*.js",
+		"build": "tsc && eslint --no-config-lookup -c eslint.dist.js dist/*.js",
 		"build:test": "tsc --project test/tsconfig.json && npm test",
 		"test": "mocha"
 	},
@@ -40,15 +40,14 @@
 		"@bhsd/common": "^3.0.0"
 	},
 	"devDependencies": {
-		"@bhsd/code-standard": "^2.7.0",
+		"@bhsd/code-standard": "^3.0.0",
 		"@codemirror/language": "^6.12.3",
 		"@codemirror/lang-css": "^6.3.1",
 		"@codemirror/lang-html": "^6.4.11",
 		"@codemirror/state": "^6.6.0",
 		"@codemirror/view": "^6.42.1",
 		"@types/mocha": "^10.0.10",
-		"esbuild": "^0.28.0",
-		"eslint": "^10.4.1",
+		"eslint": "^10.5.0",
 		"markdownlint-cli2": "^0.22.1",
 		"mocha": "^11.7.6",
 		"typescript": "^6.0.3"

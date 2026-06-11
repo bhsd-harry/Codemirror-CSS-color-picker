@@ -63,10 +63,7 @@ class ColorPickerWidget extends WidgetType {
  * @param view the editor view for which to compute decorations
  * @param discoverColors the function to discover colors in a syntax node; return `false` to skip children
  */
-const colorPickersDecorations = (
-	view: EditorView,
-	discoverColors: DiscoverColors,
-): DecorationSet => {
+const colorPickersDecorations = (view: EditorView, discoverColors: DiscoverColors): DecorationSet => {
 	const widgets: Range<Decoration>[] = [],
 		{state, visibleRanges} = view,
 		tree = syntaxTree(state);

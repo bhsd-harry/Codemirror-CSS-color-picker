@@ -42,3 +42,4 @@
 **Changed**
 
 - This package is restructured
+- CSS colors are now parsed using [color-rgba](https://www.npmjs.com/package/color-rgba) instead of simple regular expressions
