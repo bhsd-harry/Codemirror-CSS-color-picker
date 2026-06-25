@@ -1,4 +1,5 @@
 import assert from 'assert';
+import {describe, it} from '@bhsd/test-util/mocha';
 import {getDelimiter, alphaToString, colorToString} from '../../dist/color.js';
 import type {WidgetOptions} from '../../dist/types';
 

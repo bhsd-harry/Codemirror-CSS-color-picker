@@ -1,4 +1,5 @@
 import assert from 'assert';
+import {describe, it} from '@bhsd/test-util/mocha';
 import {Text} from '@codemirror/state';
 import {cssLanguage} from '@codemirror/lang-css';
 import {htmlLanguage} from '@codemirror/lang-html';
