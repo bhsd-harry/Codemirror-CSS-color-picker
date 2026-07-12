@@ -1,4 +1,5 @@
-import {intToHex, numToHex, rgba, hsla, colorsNamed} from '@bhsd/common';
+import {intToHex, numToHex} from '@bhsd/common';
+import {rgba, hsla, colorsNamed} from '@bhsd/common/color';
 import type {WidgetOptions, RGB, ColorData} from './types';
 
 const parse = (color: string): Pick<ColorData, 'color' | 'alpha'> | false => {

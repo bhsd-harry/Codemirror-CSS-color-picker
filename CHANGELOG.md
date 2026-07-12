@@ -1,4 +1,12 @@
 <!-- markdownlint-disable first-line-h1 -->
+## 8.0.1
+
+*2026-07-16*
+
+**Changed**
+
+- Updated dependencies
+
 ## 8.0.0
 
 *2026-06-11*
