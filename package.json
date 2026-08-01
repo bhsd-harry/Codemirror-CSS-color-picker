@@ -50,6 +50,6 @@
 		"@codemirror/view": "^6.43.6",
 		"eslint": "^10.7.0",
 		"markdownlint-cli2": "^0.23.0",
-		"typescript": "^6.0.3"
+		"typescript": "^7.0.2"
 	}
 }
