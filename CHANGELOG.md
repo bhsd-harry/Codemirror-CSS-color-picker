@@ -1,4 +1,12 @@
 <!-- markdownlint-disable first-line-h1 -->
+## 8.0.2
+
+*2026-08-16*
+
+**Changed**
+
+- When picking a new color for `transparent`, the new color string will be `rgb()` instead of hex color literal to achieve better browser compatibility
+
 ## 8.0.1
 
 *2026-07-16*

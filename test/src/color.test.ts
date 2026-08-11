@@ -107,9 +107,9 @@ describe('color utils', () => {
 				'red',
 				'red',
 				'red',
-				'#ff00008e',
-				'#ff00008e',
-				'#ff00008e',
+				'rgba(255 0 0 / 0.56)',
+				'rgba(255, 0, 0, 0.56)',
+				'rgba(255,0,0,0.56)',
 			],
 		);
 		colorTest(

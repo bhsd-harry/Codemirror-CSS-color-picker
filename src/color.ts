@@ -72,11 +72,12 @@ export const colorToString = (
 	if (currentColor.every((c, i) => c === Math.round(color[i]!))) {
 		return false;
 	}
-	const delimiter = getDelimiter(legacy, spaced);
+	const delimiter = getDelimiter(legacy, spaced),
+		rgbParams = `(${currentColor.join(delimiter)}${alphaToString(alpha, legacy, spaced)})`;
 	switch (colorType) {
 		case 'rgba':
 		case 'rgb':
-			return `${colorType}(${currentColor.join(delimiter)}${alphaToString(alpha, legacy, spaced)})`;
+			return colorType + rgbParams;
 		case 'hsla':
 		case 'hsl': {
 			const [h, s, l] = hsla(value);
@@ -89,6 +90,8 @@ export const colorToString = (
 				if (colorName) {
 					return colorName;
 				}
+			} else {
+				return `rgba${rgbParams}`;
 			}
 			// fall through
 		case 'hex':
