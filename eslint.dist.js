@@ -1,1 +1,1 @@
-export {dist as default} from '@bhsd/code-standard';
+export {distES10 as default} from '@bhsd/code-standard';

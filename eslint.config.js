@@ -1,11 +1,11 @@
-import config, {browser} from '@bhsd/code-standard';
+import config, {browserES10} from '@bhsd/code-standard';
 
 export default [
 	{
 		ignores: ['**/*.js'],
 	},
 	...config,
-	browser,
+	browserES10,
 	{
 		files: ['**/*.ts'],
 		rules: {

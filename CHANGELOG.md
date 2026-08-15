@@ -1,11 +1,12 @@
 <!-- markdownlint-disable first-line-h1 -->
-## 8.0.2
+## 8.0.3
 
 *2026-08-16*
 
 **Changed**
 
 - When picking a new color for `transparent`, the new color string will be `rgb()` instead of hex color literal to achieve better browser compatibility
+- The package is now compatible with ECMAScript 2019
 
 ## 8.0.1
 
