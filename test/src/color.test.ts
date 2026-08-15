@@ -49,14 +49,13 @@ describe('color utils', () => {
 	});
 
 	it('alphaToString', () => {
-		mockTest(1, ['', '', '']);
 		mockTest(0, [' / 0', ', 0', ',0']);
 		mockTest(0.555, [' / 0.56', ', 0.56', ',0.56']);
 		mockTest(0.5, [' / 0.5', ', 0.5', ',0.5']);
 	});
 
 	it('colorToString', () => {
-		assert.strictEqual(colorToString({color: [254.6, 0.3, 0]} as WidgetOptions, '#f00'), false);
+		assert.strictEqual(colorToString({color: [254.6, 0.3, 0]} as WidgetOptions, '#ff0000'), false);
 		colorTest(
 			'rgba',
 			[
@@ -82,31 +81,31 @@ describe('color utils', () => {
 		colorTest(
 			'hsla',
 			[
-				'hsla(0 100% 50%)',
-				'hsla(0, 100%, 50%)',
-				'hsla(0,100%,50%)',
-				'hsla(0 100% 50% / 0.56)',
-				'hsla(0, 100%, 50%, 0.56)',
-				'hsla(0,100%,50%,0.56)',
+				'#ff0000',
+				'#ff0000',
+				'#ff0000',
+				'rgba(255 0 0 / 0.56)',
+				'rgba(255, 0, 0, 0.56)',
+				'rgba(255,0,0,0.56)',
 			],
 		);
 		colorTest(
 			'hsl',
 			[
-				'hsl(0 100% 50%)',
-				'hsl(0, 100%, 50%)',
-				'hsl(0,100%,50%)',
-				'hsl(0 100% 50% / 0.56)',
-				'hsl(0, 100%, 50%, 0.56)',
-				'hsl(0,100%,50%,0.56)',
+				'#ff0000',
+				'#ff0000',
+				'#ff0000',
+				'rgba(255 0 0 / 0.56)',
+				'rgba(255, 0, 0, 0.56)',
+				'rgba(255,0,0,0.56)',
 			],
 		);
 		colorTest(
 			'named',
 			[
-				'red',
-				'red',
-				'red',
+				'#ff0000',
+				'#ff0000',
+				'#ff0000',
 				'rgba(255 0 0 / 0.56)',
 				'rgba(255, 0, 0, 0.56)',
 				'rgba(255,0,0,0.56)',

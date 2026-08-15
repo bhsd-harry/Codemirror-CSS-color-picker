@@ -8,7 +8,19 @@ export interface ColorData {
 	/** RGB component values, each in the range 0-255 */
 	color: RGB;
 	alpha: number;
-	colorType: 'rgb' | 'rgba' | 'hsl' | 'hsla' | 'hex' | 'named' | 'unknown';
+	colorType: 'hex'
+		| 'named'
+		| 'rgb'
+		| 'rgba'
+		| 'hsl'
+		| 'hsla'
+		| 'hwb'
+		| 'lab'
+		| 'lch'
+		| 'oklab'
+		| 'oklch'
+		| 'color'
+		| 'unknown';
 	legacy: boolean;
 	spaced: boolean;
 

@@ -1,11 +1,48 @@
+/* eslint-disable jsdoc/require-jsdoc, @typescript-eslint/class-methods-use-this */
 import assert from 'assert';
 import {describe, it} from '@bhsd/test-util/mocha';
+import {rgba} from '@bhsd/common/color';
 import {Text} from '@codemirror/state';
 import {cssLanguage} from '@codemirror/lang-css';
 import {htmlLanguage} from '@codemirror/lang-html';
 import {parseCallExpression, parseColorLiteral, parseNamedColor} from '../../dist/color.js';
 import {discoverColorsInCSS} from '../../dist/css.js';
 import type {RGB, ColorData, WidgetOptions} from '../../dist/types';
+
+class OffscreenCanvasRenderingContext {
+	#rgba: [number, number, number, number] = [0, 0, 0, 1];
+
+	get fillStyle(): string {
+		return `rgba(${this.#rgba.join(', ')})`;
+	}
+
+	set fillStyle(value: string) {
+		const result = rgba(value);
+		if (result.length === 4) {
+			this.#rgba = result;
+		}
+	}
+
+	clearRect(): void {
+		//
+	}
+
+	fillRect(): void {
+		//
+	}
+
+	getImageData(): {data: number[]} {
+		return {data: [...this.#rgba.slice(0, 3), this.#rgba[3] * 255]};
+	}
+}
+
+class OffscreenCanvas { // eslint-disable-line @typescript-eslint/no-shadow
+	getContext(): OffscreenCanvasRenderingContext {
+		return new OffscreenCanvasRenderingContext();
+	}
+}
+
+Object.assign(globalThis, {OffscreenCanvas});
 
 const rgbTest = (rgb: RGB, expected = rgb): void => {
 	const rgbStr = rgb.map(c => c > 0 && c < 1 ? `${c * 100}%` : String(c));
@@ -157,7 +194,16 @@ const hslTest = (hsl: RGB, expected: RGB): void => {
 
 describe('discovering CSS colors', () => {
 	it('parses call expressions', () => {
-		assert.strictEqual(parseCallExpression('hwb(0 100% 0)'), false);
+		assert.deepStrictEqual(
+			parseCallExpression('hwb(0 100% 0)'),
+			{
+				color: [255, 255, 255],
+				alpha: 1,
+				colorType: 'hwb',
+				legacy: false,
+				spaced: true,
+			},
+		);
 		assert.strictEqual(parseCallExpression('rgb(255 0)'), false);
 		assert.deepStrictEqual(
 			parseCallExpression('rgb(255 0 0.3)'),

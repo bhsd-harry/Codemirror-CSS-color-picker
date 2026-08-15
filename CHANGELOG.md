@@ -1,4 +1,17 @@
 <!-- markdownlint-disable first-line-h1 -->
+## 9.0.0
+
+*2026-08-17*
+
+**Added**
+
+- A wider range of CSS color functions are now supported
+
+**Changed**
+
+- CSS colors are now parsed natively using [OffscreenCanvas](https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas) instead of [culori](https://culorijs.org/)
+- When picking a new color for named colors or `hsl()`, the new color string will be either hex color literal (`#rrggbb`) or `rgba()`
+
 ## 8.0.3
 
 *2026-08-16*

@@ -11,7 +11,7 @@ else
 	npm run lint && npm run build && npm run build:test
 	if [[ $? -eq 0 ]]
 	then
-		git fetch --prune --prune-tags
+		git fetch --prune --prune-tags origin
 		gsed -i -E "s/\"version\": \".+\"/\"version\": \"$1\"/" package.json
 		git add -A
 		git commit -m "chore: bump version to $1"
