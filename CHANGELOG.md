@@ -1,4 +1,12 @@
 <!-- markdownlint-disable first-line-h1 -->
+## 9.0.1
+
+*2026-08-17*
+
+**Changed**
+
+- The checkerboard background to indicate transparency is changed
+
 ## 9.0.0
 
 *2026-08-17*

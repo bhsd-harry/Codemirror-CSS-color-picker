@@ -113,15 +113,14 @@ linear-gradient(45deg, ${fg} 25%, ${bg} 25%, ${bg} 75%, ${fg} 75%)`;
 const colorPickerTheme = EditorView.baseTheme({
 	[`.${wrapperClassName}`]: {
 		display: 'inline-block',
-		marginLeft: '0.6ch',
-		marginRight: '0.6ch',
+		marginLeft: '.6ch',
+		marginRight: '.6ch',
 		height: '1em',
 		width: '1em',
 		outline: '1px solid #ddd',
 		position: 'relative',
-		transform: 'translateY(0.1em)',
-		backgroundSize: '0.4em 0.4em',
-		backgroundPosition: '0 0, 0.2em 0.2em',
+		transform: 'translateY(.1em)',
+		backgroundPosition: '0 0, .5em .5em',
 
 		'&>input[type="color"]': {
 			height: '100%',
