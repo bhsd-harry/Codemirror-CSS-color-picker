@@ -1,6 +1,6 @@
 {
 	"name": "@bhsd/codemirror-css-color-picker",
-	"version": "9.0.0",
+	"version": "9.0.1",
 	"description": "Enables a color picker input next to CSS colors",
 	"homepage": "https://github.com/bhsd-harry/Codemirror-CSS-color-picker#readme",
 	"bugs": {
@@ -27,7 +27,8 @@
 		"prepublishOnly": "npm run build",
 		"lint:ts": "tsc --noEmit && eslint --cache .",
 		"lint:md": "markdownlint-cli2 '**/*.md'",
-		"lint": "npm run lint:ts && npm run lint:md",
+		"lint:css": "stylelint --cache '**/*.css'",
+		"lint": "npm run lint:ts && npm run lint:css && npm run lint:md",
 		"build": "tsc && eslint --no-config-lookup -c eslint.dist.js dist/*.js",
 		"build:test": "tsc --project test/tsconfig.json && npm test",
 		"test": "testUtil test/dist/*.test.js"
@@ -47,10 +48,11 @@
 		"@codemirror/lang-css": "^6.3.1",
 		"@codemirror/lang-html": "^6.4.12",
 		"@codemirror/state": "^6.7.1",
-		"@codemirror/view": "^6.43.8",
+		"@codemirror/view": "^6.43.9",
 		"culori": "^4.0.2",
-		"eslint": "^10.8.1",
+		"eslint": "^10.9.1",
 		"markdownlint-cli2": "^0.23.2",
+		"stylelint": "^17.14.1",
 		"typescript": "^6.0.3"
 	}
 }

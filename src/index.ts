@@ -122,7 +122,7 @@ const colorPickerTheme = EditorView.baseTheme({
 		transform: 'translateY(.1em)',
 		backgroundPosition: '0 0, .5em .5em',
 
-		'&>input[type="color"]': {
+		'&>input[type=color]': {
 			height: '100%',
 			width: '100%',
 			padding: 0,
