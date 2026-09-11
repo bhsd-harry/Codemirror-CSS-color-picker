@@ -8,7 +8,7 @@ then
 	gh release create "$1" --notes-file release-notes.md -t "v$1" --verify-tag --latest="${3-true}"
 	rm release-notes.md
 else
-	npm run lint && npm run build && npm run build:test
+	npm run lint && npm run build && npm test
 	if [[ $? -eq 0 ]]
 	then
 		git fetch --prune --prune-tags origin

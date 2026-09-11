@@ -30,8 +30,7 @@
 		"lint:css": "stylelint --cache '**/*.css'",
 		"lint": "npm run lint:ts && npm run lint:css && npm run lint:md",
 		"build": "tsc && eslint --no-config-lookup -c eslint.dist.js dist/*.js",
-		"build:test": "tsc --project test/tsconfig.json && npm test",
-		"test": "testUtil test/dist/*.test.js"
+		"test": "tsc -p test/tsconfig.json && testUtil test/dist/*.test.js"
 	},
 	"peerDependencies": {
 		"@codemirror/language": "^6.0.0",
@@ -42,17 +41,17 @@
 		"@bhsd/common": "^4.1.0"
 	},
 	"devDependencies": {
-		"@bhsd/code-standard": "^4.2.0",
-		"@bhsd/test-util": "^3.2.0",
+		"@bhsd/code-standard": "^4.3.0",
+		"@bhsd/test-util": "^3.2.1",
 		"@codemirror/language": "^6.12.4",
 		"@codemirror/lang-css": "^6.3.1",
 		"@codemirror/lang-html": "^6.4.12",
-		"@codemirror/state": "^6.7.1",
-		"@codemirror/view": "^6.43.9",
+		"@codemirror/state": "^6.7.6",
+		"@codemirror/view": "^6.43.13",
 		"culori": "^4.0.2",
-		"eslint": "^10.10.0",
-		"markdownlint-cli2": "^0.23.2",
-		"stylelint": "^17.15.0",
+		"eslint": "^10.12.0",
+		"markdownlint-cli2": "^0.23.3",
+		"stylelint": "^17.16.0",
 		"typescript": "^6.0.3"
 	}
 }
