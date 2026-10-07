@@ -8,187 +8,87 @@ import {parseCallExpression, parseColorLiteral, parseNamedColor} from '../../dis
 import {discoverColorsInCSS} from '../../dist/css.js';
 import type {RGB, ColorData, WidgetOptions} from '../../dist/types';
 
-const rgbTest = (rgb: RGB, expected = rgb): void => {
-	const rgbStr = rgb.map(c => c > 0 && c < 1 ? `${c * 100}%` : String(c));
-	for (const fn of ['rgb', 'RGB', 'rgba', 'RGBA']) {
-		const exp = `${fn}( ${rgbStr.join()} )`;
+const callExpressionTest = (
+		exp: string,
+		color: RGB,
+		colorType: 'rgb' | 'rgba' | 'hsl' | 'hsla' | 'hwb',
+		alpha = 1,
+		legacy = false,
+		spaced = true,
+	): void => {
 		assert.deepStrictEqual(
 			parseCallExpression(exp),
-			{
-				color: expected,
-				alpha: 1,
-				colorType: fn.toLowerCase() as 'rgb' | 'rgba',
-				legacy: true,
-				spaced: true,
-			} satisfies ColorData,
+			{color, alpha, colorType, legacy, spaced} satisfies ColorData,
 			exp,
 		);
-	}
-	for (const delimiter of [',', ' ', ', ']) {
-		const exp = `rgb(${rgbStr.join(delimiter)})`;
-		assert.deepStrictEqual(
-			parseCallExpression(exp),
-			{
-				color: expected,
-				alpha: 1,
-				colorType: 'rgb',
-				legacy: delimiter !== ' ',
-				spaced: delimiter !== ',',
-			} satisfies ColorData,
-			exp,
-		);
-	}
-	for (const alpha of ['0.555', '.555', '55.5%']) {
-		for (const delimiter of [',', ', ']) {
-			const exp = `rgb(${rgbStr.join(delimiter)},${alpha})`;
-			assert.deepStrictEqual(
-				parseCallExpression(exp),
-				{
-					color: expected,
-					alpha: 0.555,
-					colorType: 'rgb',
-					legacy: true,
-					spaced: delimiter === ', ',
-				} satisfies ColorData,
-				exp,
+	},
+	fnTest = (colorStr: string, fns: string[], expected: RGB, legacy: boolean): void => {
+		for (const fn of fns) {
+			callExpressionTest(
+				`${fn}( ${colorStr} )`,
+				expected,
+				fn.toLowerCase() as 'rgb' | 'rgba' | 'hsl' | 'hsla',
+				1,
+				legacy,
 			);
 		}
-		const exp = `rgb(${rgbStr.join(' ')} / ${alpha})`;
-		assert.deepStrictEqual(
-			parseCallExpression(exp),
-			{
-				color: expected,
-				alpha: 0.555,
-				colorType: 'rgb',
-				legacy: false,
-				spaced: true,
-			} satisfies ColorData,
-			exp,
-		);
-	}
+	},
+	delimiterTest = (color: string[], delimiters: string[], fn: 'rgb' | 'hsl', expected: RGB, alpha = ''): void => {
+		for (const delimiter of delimiters) {
+			callExpressionTest(
+				`${fn}(${color.join(delimiter)}${alpha && `,${alpha}`})`,
+				expected,
+				fn,
+				alpha ? 0.555 : 1,
+				delimiter !== ' ',
+				delimiter !== ',',
+			);
+		}
+	},
+	delimiterAndAlphaTest = (color: string[], fn: 'rgb' | 'hsl', expected: RGB): void => {
+		delimiterTest(color, [',', ' ', ', '], fn, expected);
+		for (const alpha of ['0.555', '.555', '55.5%']) {
+			delimiterTest(color, [',', ', '], fn, expected, alpha);
+			callExpressionTest(
+				`${fn}(${color.join(' ')} / ${alpha})`,
+				expected,
+				fn,
+				0.555,
+			);
+		}
+	};
+
+const rgbTest = (rgb: RGB, expected = rgb): void => {
+	const rgbStr = rgb.map(c => c > 0 && c < 1 ? `${c * 100}%` : String(c)),
+		fns = ['rgb', 'RGB', 'rgba', 'RGBA'];
+	fnTest(rgbStr.join(' '), fns, expected, false);
+	fnTest(rgbStr.join(), fns, expected, true);
+	delimiterAndAlphaTest(rgbStr, 'rgb', expected);
 };
 
 const hslTest = (hsl: RGB, expected: RGB): void => {
 	const [h, s, l] = hsl,
-		hslStr = [`${h}deg`, `${s}%`, `${l}%`];
-	for (const fn of ['hsl', 'HSL', 'hsla', 'HSLA']) {
-		let exp = `${fn}( ${hsl.map(String).join(' ')} )`;
-		assert.deepStrictEqual(
-			parseCallExpression(exp),
-			{
-				color: expected,
-				alpha: 1,
-				colorType: fn.toLowerCase() as 'hsl' | 'hsla',
-				legacy: false,
-				spaced: true,
-			} satisfies ColorData,
-			exp,
-		);
-		exp = `${fn}( ${hslStr.join(', ')} )`;
-		assert.deepStrictEqual(
-			parseCallExpression(exp),
-			{
-				color: expected,
-				alpha: 1,
-				colorType: fn.toLowerCase() as 'hsl' | 'hsla',
-				legacy: true,
-				spaced: true,
-			} satisfies ColorData,
-			exp,
-		);
-	}
-	for (const delimiter of [',', ' ', ', ']) {
-		const exp = `hsl(${hslStr.join(delimiter)})`;
-		assert.deepStrictEqual(
-			parseCallExpression(exp),
-			{
-				color: expected,
-				alpha: 1,
-				colorType: 'hsl',
-				legacy: delimiter !== ' ',
-				spaced: delimiter !== ',',
-			} satisfies ColorData,
-			exp,
-		);
-	}
-	for (const alpha of ['0.555', '.555', '55.5%']) {
-		for (const delimiter of [',', ', ']) {
-			const exp = `hsl(${hslStr.join(delimiter)},${alpha})`;
-			assert.deepStrictEqual(
-				parseCallExpression(exp),
-				{
-					color: expected,
-					alpha: 0.555,
-					colorType: 'hsl',
-					legacy: true,
-					spaced: delimiter === ', ',
-				} satisfies ColorData,
-				exp,
-			);
-		}
-		const exp = `hsl(${hslStr.join(' ')} / ${alpha})`;
-		assert.deepStrictEqual(
-			parseCallExpression(exp),
-			{
-				color: expected,
-				alpha: 0.555,
-				colorType: 'hsl',
-				legacy: false,
-				spaced: true,
-			} satisfies ColorData,
-			exp,
-		);
-	}
+		hslStr = [`${h}deg`, `${s}%`, `${l}%`],
+		fns = ['hsl', 'HSL', 'hsla', 'HSLA'];
+	fnTest(hsl.map(String).join(' '), fns, expected, false);
+	fnTest(hslStr.join(', '), fns, expected, true);
+	delimiterAndAlphaTest(hslStr, 'hsl', expected);
 	const units = [['', 1], ['deg', 1], ['rad', 180 / Math.PI], ['grad', 0.9], ['turn', 360]] as const;
 	for (const [unit, factor] of units) {
-		const exp = `hsl( ${(h / factor).toFixed(4)}${unit} ${s} ${l} )`;
-		assert.deepStrictEqual(
-			parseCallExpression(exp),
-			{
-				color: expected,
-				alpha: 1,
-				colorType: 'hsl',
-				legacy: false,
-				spaced: true,
-			} satisfies ColorData,
-			exp,
+		callExpressionTest(
+			`hsl( ${(h / factor).toFixed(4)}${unit} ${s} ${l} )`,
+			expected,
+			'hsl',
 		);
 	}
 };
 
 describe('discovering CSS colors', () => {
 	it('parses call expressions', () => {
-		assert.deepStrictEqual(
-			parseCallExpression('hwb(0 100% 0)'),
-			{
-				color: [255, 255, 255],
-				alpha: 1,
-				colorType: 'hwb',
-				legacy: false,
-				spaced: true,
-			},
-		);
+		callExpressionTest('hwb(0 100% 0)', [255, 255, 255], 'hwb');
 		assert.strictEqual(parseCallExpression('rgb(255 0)'), false);
-		assert.deepStrictEqual(
-			parseCallExpression('rgb(255 0 0.3)'),
-			{
-				color: [255, 0, 0],
-				alpha: 1,
-				colorType: 'rgb',
-				legacy: false,
-				spaced: true,
-			},
-		);
-		assert.deepStrictEqual(
-			parseCallExpression('rgb(255, 0, 0, 55.5%)'),
-			{
-				color: [255, 0, 0],
-				alpha: 0.555,
-				colorType: 'rgb',
-				legacy: true,
-				spaced: true,
-			},
-		);
+		callExpressionTest('rgb(255 0 0.3)', [255, 0, 0], 'rgb');
+		callExpressionTest('rgb(255, 0, 0, 55.5%)', [255, 0, 0], 'rgb', 0.555, true);
 		rgbTest([255, 0, 0]);
 		rgbTest([100.6, 100.4, 100], [101, 100, 100]);
 		rgbTest([0.3, 0.4, 0.5], [77, 102, 128]);
